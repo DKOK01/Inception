@@ -48,6 +48,14 @@ if [ ! -f "wp-config.php" ]; then
 
     # Give the web server permission to read these files
     chown -R www-data:www-data /var/www/wordpress
+
+    echo "Configuring Redis Cache..."
+    wp config set WP_REDIS_HOST 'redis' --allow-root
+    wp config set WP_REDIS_PORT 6379 --raw --allow-root
+    wp config set WP_CACHE true --raw --allow-root
+    wp plugin install redis-cache --activate --allow-root
+    wp redis enable --allow-root
+
     echo "WordPress initialization complete!"
 fi
 

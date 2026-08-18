@@ -43,8 +43,65 @@ services:
     env_file: .env
     ports:
       - "443:443"
+      - "9443:9443"
     volumes:
       - wp_data:/var/www/wordpress
+    networks:
+      - inception
+  adminer:
+    build:
+      context: ./requirements/Bonuses/adminer
+      dockerfile: Dockerfile
+    container_name: adminer
+    restart: always
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+
+  static_site:
+    build:
+      context: ./requirements/Bonuses/static_site
+      dockerfile: Dockerfile
+    container_name: static_site
+    restart: always
+    networks:
+      - inception
+
+  portainer:
+    build:
+      context: ./requirements/Bonuses/portainer
+      dockerfile: Dockerfile
+    container_name: portainer
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - inception
+
+  redis:
+    build:
+      context: ./requirements/Bonuses/redis
+      dockerfile: Dockerfile
+    container_name: redis
+    restart: always
+    networks:
+      - inception
+
+  ftp:
+    build:
+      context: ./requirements/Bonuses/ftp
+      dockerfile: Dockerfile
+    container_name: ftp
+    restart: always
+    env_file: .env
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    volumes:
+      - wp_data:/var/www/wordpress
+    secrets:
+      - ftp_password
     networks:
       - inception
 
@@ -76,3 +133,5 @@ secrets:
     file: ../secrets/wp_admin_password.txt
   wp_user_password:
     file: ../secrets/wp_user_password.txt
+  ftp_password:
+    file: ../secrets/ftp_password.txt
