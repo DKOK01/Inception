@@ -1,17 +1,18 @@
 #!/bin/bash
 set -e
 
+# 0. Ensure the socket directory exists (since /run is wiped on every reboot)
+mkdir -p /run/mysqld
+chown -R mysql:mysql /run/mysqld
+
 # Read passwords from Docker Secrets
 DB_PWD=$(cat /run/secrets/db_password)
 DB_ROOT_PWD=$(cat /run/secrets/db_root_password)
 
-# Check if the database is already initialized
-# (If /var/lib/mysql/mysql exists, it means we already set it up previously)
-if [ ! -d "/var/lib/mysql/mysql" ]; then
-    echo "Initializing MariaDB for the first time..."
-    
-    # 1. Initialize the empty data directory
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
+# Check if our custom database exists
+# (If /var/lib/mysql/${MYSQL_DATABASE} exists, it means we already set it up previously)
+if [ ! -d "/var/lib/mysql/${MYSQL_DATABASE}" ]; then
+    echo "Initializing MariaDB custom users for the first time..."
 
     # 2. Start MariaDB temporarily in the background
     mysqld --user=mysql &
