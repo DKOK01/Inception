@@ -11,6 +11,7 @@ COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 # Copy the setup script
 COPY tools/setup-ssl.sh /usr/local/bin/setup-ssl.sh
+RUN chmod +x /usr/local/bin/setup-ssl.sh
 
 # Expose port 443 (HTTPS)
 EXPOSE 443

@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
 # Copy our configuration and setup script
 COPY conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
 COPY tools/setup-wp.sh /usr/local/bin/setup-wp.sh
+RUN chmod +x /usr/local/bin/setup-wp.sh
 
 # Expose the PHP-FPM network port
 EXPOSE 9000
